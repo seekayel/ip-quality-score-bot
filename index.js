@@ -69,7 +69,7 @@ const msgRegExpStr = process.env.MESSAGE_REGEX_STRING || 'ip quality score'
 const messageSelector = new RegExp(regExStr)
 
 
-function ipQualityScore(email) {
+async function ipQualityScore(email) {
   var key = process.env.IP_QUALITY_SCORE_KEY
 
   if (key === undefined) {
@@ -103,7 +103,7 @@ router.post('/events', authorize_slack, async (req, res) => {
     let msgEmail = 'test@example.com'
 
     const result = await web.chat.postMessage({
-      text: ipQualityScore(msgEmail),
+      text: await ipQualityScore(msgEmail),
       channel,
       thread_ts:ts
     });
