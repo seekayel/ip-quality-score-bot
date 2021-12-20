@@ -93,20 +93,23 @@ router.post('/events', authorize_slack, async (req, res) => {
   let msg_txt = event.text
   let app_id = event?.bot_profile?.app_id
 
+  let isAppMention = (event.type === "app_mention")
+  let isMessage = (event.type === "message")
+  let selfMessage = (app_id === process.env.SLACK_APP_ID)
+  let matchesMessage = messageSelector.exec(msg_txt)
 
-  console.log(`got[${event.type}]: ${event.text}`)
-  console.log(`app_id:${app_id} != SLACK_APP_ID:${process.env.SLACK_APP_ID} result:${app_id != process.env.SLACK_APP_ID}`)
+  console.log(`got[${event.type}]: ${msg_txt}`)
+  console.log(`isMessage:${isMessage} selfMessage:${selfMessage} matchesMessage:${matchesMessage}`)
 
   // Event types defined here: https://api.slack.com/events?filter=Events
-  if (event.type === "app_mention") {
+  if (isAppMention) {
     let resp_txt = `Hi <@${event.user}>! :smile: I heard you say:\n\n> ${msg_txt}`
     const result = await web.chat.postMessage({
       text: resp_txt,
       channel,
       thread_ts:ts
     });
-  } else if (event.type === "message" && app_id != process.env.SLACK_APP_ID && messageSelector.exec(msg_txt)) {
-    console.log(`got message: ${msg_txt}`)
+  } else if (isMessage && !selfMessage && matchesMessage) {
 
     const match = emailCapture.exec(msg_txt);
     console.log(match?.groups?.emailAddr);
