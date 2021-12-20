@@ -104,7 +104,7 @@ router.post('/events', authorize_slack, async (req, res) => {
       thread_ts:ts
     });
   } else if (
-    event.type === "message" &&
+    false && event.type === "message" &&
     messageSelector.exec(msg_txt) &&
     event.api_app_id != process.env.SLACK_APP_ID ) {
     console.log(`got message: ${msg_txt}`)
