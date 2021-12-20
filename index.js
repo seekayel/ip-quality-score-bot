@@ -65,7 +65,7 @@ const authorize_slack = (req,res,next)=>{
   return next()
 }
 
-const msgRegExpStr = process.env.MESSAGE_REGEX_STRING || 'ip quality score'
+const regExStr = process.env.MESSAGE_REGEX_STRING || 'ip quality score'
 const messageSelector = new RegExp(regExStr)
 
 
