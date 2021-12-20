@@ -67,7 +67,7 @@ const authorize_slack = (req,res,next)=>{
 
 const regExStr = process.env.MESSAGE_REGEX_STRING || 'ip quality score'
 const messageSelector = new RegExp(regExStr)
-const emailRegExStr = process.env.MESSAGE_EMAIL_CAPTURE || 'mailto:(?<emailAddr>\S+\@\S+)|';
+const emailRegExStr = process.env.MESSAGE_EMAIL_CAPTURE || 'mailto\:(?<emailAddr>\S+\@\S+)\|';
 const emailCapture = new RegExp(emailRegExStr)
 const BLOCK = "```"
 
