@@ -91,6 +91,7 @@ router.post('/events', authorize_slack, async (req, res) => {
   let ts = event.thread_ts || event.ts
   let channel = event.channel
   let msg_txt = event.text
+  let app_id = req.body.api_app_id
 
 
   console.log(`got[${event.type}]: ${event.text}`)
@@ -103,10 +104,7 @@ router.post('/events', authorize_slack, async (req, res) => {
       channel,
       thread_ts:ts
     });
-  } else if (
-    false && event.type === "message" &&
-    messageSelector.exec(msg_txt) &&
-    event.api_app_id != process.env.SLACK_APP_ID ) {
+  } else if (event.type === "message" && app_id != process.env.SLACK_APP_ID && messageSelector.exec(msg_txt)) {
     console.log(`got message: ${msg_txt}`)
 
     const match = emailCapture.exec(msg_txt);
