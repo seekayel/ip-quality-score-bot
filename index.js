@@ -103,7 +103,10 @@ router.post('/events', authorize_slack, async (req, res) => {
       channel,
       thread_ts:ts
     });
-  } else if (event.type === "message" && messageSelector.exec(msg_txt)) {
+  } else if (
+    event.type === "message" &&
+    messageSelector.exec(msg_txt) &&
+    event.api_app_id != process.env.SLACK_APP_ID ) {
     console.log(`got message: ${msg_txt}`)
 
     const match = emailCapture.exec(msg_txt);
@@ -111,11 +114,11 @@ router.post('/events', authorize_slack, async (req, res) => {
 
     const ipResp = (match?.groups?.emailAddr)? await ipQualityScore(match?.groups?.emailAddr) : `Unable to extract email from message.\n\n${msg_txt}`
 
-    // const result = await web.chat.postMessage({
-    //   text: `${BLOCK}${ipResp}${BLOCK}`,
-    //   channel,
-    //   thread_ts:ts
-    // });
+    const result = await web.chat.postMessage({
+      text: `${BLOCK}${ipResp}${BLOCK}`,
+      channel,
+      thread_ts:ts
+    });
   } else {
     console.log(`unknown message type`)
   }
