@@ -95,6 +95,7 @@ router.post('/events', authorize_slack, async (req, res) => {
 
 
   console.log(`got[${event.type}]: ${event.text}`)
+  console.log(`app_id:${app_id} != SLACK_APP_ID:${process.env.SLACK_APP_ID}`)
 
   // Event types defined here: https://api.slack.com/events?filter=Events
   if (event.type === "app_mention") {
