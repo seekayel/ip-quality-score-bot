@@ -91,7 +91,7 @@ router.post('/events', authorize_slack, async (req, res) => {
   let ts = event.thread_ts || event.ts
   let channel = event.channel
   let msg_txt = event.text
-  let app_id = req.body.api_app_id
+  let app_id = event?.bot_profile?.app_id
 
 
   console.log(`got[${event.type}]: ${event.text}`)
