@@ -78,8 +78,10 @@ async function ipQualityScore(email) {
 
   var response = await axios.get(`https://ipqualityscore.com/api/json/email/${key}/${email}`)
   console.log(response.data);
-  return response.data
+  return JSON.stringify(response.data,null,2)
 }
+
+const BLOCK = "```"
 
 router.post('/events', authorize_slack, async (req, res) => {
   let event = req.body.event;
@@ -103,8 +105,10 @@ router.post('/events', authorize_slack, async (req, res) => {
 
     let msgEmail = 'test@example.com'
 
+    const ipResp = await ipQualityScore(msgEmail)
+
     const result = await web.chat.postMessage({
-      text: await ipQualityScore(msgEmail),
+      text: `${BLOCK}${ipResp}${BLOCK}`,
       channel,
       thread_ts:ts
     });
