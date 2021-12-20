@@ -111,11 +111,11 @@ router.post('/events', authorize_slack, async (req, res) => {
 
     const ipResp = (match?.groups?.emailAddr)? await ipQualityScore(match?.groups?.emailAddr) : `Unable to extract email from message.\n\n${msg_txt}`
 
-    const result = await web.chat.postMessage({
-      text: `${BLOCK}${ipResp}${BLOCK}`,
-      channel,
-      thread_ts:ts
-    });
+    // const result = await web.chat.postMessage({
+    //   text: `${BLOCK}${ipResp}${BLOCK}`,
+    //   channel,
+    //   thread_ts:ts
+    // });
   } else {
     console.log(`unknown message type`)
   }
