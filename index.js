@@ -78,6 +78,7 @@ async function ipQualityScore(email) {
 
   var response = await axios.get(`https://ipqualityscore.com/api/json/email/${key}/${email}`)
   console.log(response.data);
+  return response.data
 }
 
 router.post('/events', authorize_slack, async (req, res) => {
