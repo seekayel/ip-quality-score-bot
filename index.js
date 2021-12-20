@@ -127,8 +127,8 @@ router.all('/', async (req,res) => {
 
       let url = `https://api.slack.com/apps?new_app=1&manifest_json=${encodedManifest}`
       console.log(url)
-      res.send(url)
-      // return res.sendFile(path.resolve('./public/index.html'));
+      // res.send(url)
+      return res.sendFile(path.resolve('./public/index.html'));
     }
   } catch(e) {
     res.status(500)
