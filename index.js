@@ -97,7 +97,7 @@ router.post('/events', authorize_slack, async (req, res) => {
       channel,
       thread_ts:ts
     });
-  } else if (event.type === "message" && messageSelector.match(msg_txt)) {
+  } else if (event.type === "message" && messageSelector.exec(msg_txt)) {
     console.log(`got message: ${msg_txt}`)
 
     let msgEmail = 'test@example.com'
@@ -121,7 +121,7 @@ router.all('/', async (req,res) => {
       return res.send('Hi! Configuration complete')
     } else {
 
-      manifest.settings.event_subscriptions.request_url = `https://${req.headers.host}`
+      manifest.settings.event_subscriptions.request_url = `https://${req.headers.host}/events`
 
       let encodedManifest = encodeURIComponent(JSON.stringify(manifest))
 
