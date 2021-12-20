@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon -r dotenv/config index.js",
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -15,6 +16,7 @@
   "license": "ISC",
   "dependencies": {
     "@slack/web-api": "^6.5.0",
+    "axios": "^0.24.0",
     "body-parser": "^1.19.0",
     "crypto": "^1.0.1",
     "express": "^4.17.1"

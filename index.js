@@ -10,6 +10,8 @@ const app = express()
 const fs = require('fs')
 const path = require('path')
 
+const axios = require('axios')
+
 // app.use(bodyParser.json())
 // app.use(bodyParser.urlencoded({ extended: true }))
 
@@ -63,6 +65,21 @@ const authorize_slack = (req,res,next)=>{
   return next()
 }
 
+const msgRegExpStr = process.env.MESSAGE_REGEX_STRING || 'ip quality score'
+const messageSelector = new RegExp(regExStr)
+
+
+function ipQualityScore(email) {
+  var key = process.env.IP_QUALITY_SCORE_KEY
+
+  if (key === undefined) {
+    return {"msg":"unable to find a valid 'IP_QUALITY_SCORE_KEY' environment variable"}
+  }
+
+  var response = await axios.get(`https://ipqualityscore.com/api/json/email/${key}/${email}`)
+  console.log(response.data);
+}
+
 router.post('/events', authorize_slack, async (req, res) => {
   let event = req.body.event;
   let ts = event.thread_ts || event.ts
@@ -80,8 +97,16 @@ router.post('/events', authorize_slack, async (req, res) => {
       channel,
       thread_ts:ts
     });
-  } else if (event.type === "message") {
-    console.log(`got message: ${event.text}`)
+  } else if (event.type === "message" && messageSelector.match(msg_txt)) {
+    console.log(`got message: ${msg_txt}`)
+
+    let msgEmail = 'test@example.com'
+
+    const result = await web.chat.postMessage({
+      text: ipQualityScore(msgEmail),
+      channel,
+      thread_ts:ts
+    });
   } else {
     console.log(`unknown message type`)
   }
