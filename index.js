@@ -106,7 +106,7 @@ router.post('/events', authorize_slack, async (req, res) => {
   } else if (event.type === "message" && messageSelector.exec(msg_txt)) {
     console.log(`got message: ${msg_txt}`)
 
-    const match = emailCapture.exec(msg);
+    const match = emailCapture.exec(msg_txt);
     console.log(match?.groups?.emailAddr);
 
     const ipResp = (match?.groups?.emailAddr)? await ipQualityScore(match?.groups?.emailAddr) : `Unable to extract email from message.\n\n${msg_txt}`
