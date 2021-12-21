@@ -15,7 +15,7 @@ describe('Message', () => {
 
     expect(msg.isSelfMessage()).toBe(false)
 
-    expect(msg.matchesMessage()).not.toBeNull()
+    expect(msg.matchesMessage()).toBe(true)
     // expect(msg.matchesMessage()).toEqual(["Spam detection on Spike.sh"])
   })
 

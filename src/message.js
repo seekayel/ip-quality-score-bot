@@ -18,7 +18,7 @@ class Message {
   }
 
   matchesMessage(){
-    return messageSelector.exec(this.text) || false
+    return messageSelector.exec(this.text) !== null
   }
 }
 
