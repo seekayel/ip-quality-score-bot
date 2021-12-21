@@ -99,7 +99,7 @@ router.post('/events', authorize_slack, async (req, res) => {
   if (msg.isAppMention()) {
     let resp_txt = `Hi <@${event.user}>! :smile: I heard you say:\n\n> ${msg.text}`
     const result = await web.chat.postMessage({text: resp_txt, channel, thread_ts:ts});
-  } else if (msg.isMessage() && !msg.isSelfMessage() && false && msg.matchesMessage()) {
+  } else if (msg.isMessage() && !msg.isSelfMessage() && msg.matchesMessage()) {
 
     const match = emailCapture.exec(msg.text);
     console.log(match?.groups?.emailAddr);
