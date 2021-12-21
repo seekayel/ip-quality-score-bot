@@ -112,7 +112,7 @@ router.post('/events', authorize_slack, async (req, res) => {
       channel,
       thread_ts:ts
     });
-  } else if (msg.isMessage() && !msg.isSelfMessage() && matchesMessage) {
+  } else if (msg.isMessage() && !msg.isSelfMessage() && false && matchesMessage) {
 
     const match = emailCapture.exec(msg.text);
     console.log(match?.groups?.emailAddr);
