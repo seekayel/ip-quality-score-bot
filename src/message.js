@@ -1,10 +1,14 @@
 
 
+const regExStr = process.env.MESSAGE_REGEX_STRING || 'ip quality score'
+const messageSelector = new RegExp(regExStr)
 
 class Message {
   constructor(msg) {
     this.msg = msg;
+    this.text = this.msg.event.text
   }
+
 
   isAppMention(){
     return (this.msg.event.type === "app_mention")
@@ -16,9 +20,9 @@ class Message {
     return (this.msg.event?.bot_profile?.app_id === process.env.SLACK_APP_ID)
   }
 
-  // matchesMessage(){
-  //   return messageSelector.exec(msg_txt)
-  // }
+  matchesMessage(){
+    return messageSelector.exec(this.msg.event.text)
+  }
 }
 
 module.exports = {Message}

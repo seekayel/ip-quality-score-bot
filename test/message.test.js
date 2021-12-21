@@ -19,6 +19,8 @@ describe('Message', () => {
     expect(msg.isMessage()).toBe(false)
     expect(msg.isAppMention()).toBe(true)
 
+    expect(msg.text).toBe('<@U02R8AXN4MU> test')
+
     expect(msg.isSelfMessage()).toBe(false)
   })
 
