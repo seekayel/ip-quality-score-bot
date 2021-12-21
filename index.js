@@ -66,11 +66,7 @@ const authorize_slack = (req,res,next)=>{
   return next()
 }
 
-const emailRegExStr = process.env.MESSAGE_EMAIL_CAPTURE || "mailto:(?<emailAddr>\\S+@\\S+)\\|";
-const emailCapture = new RegExp(emailRegExStr)
 const BLOCK = "```"
-
-
 
 async function ipQualityScore(email) {
   var key = process.env.IP_QUALITY_SCORE_KEY
@@ -101,10 +97,9 @@ router.post('/events', authorize_slack, async (req, res) => {
     const result = await web.chat.postMessage({text: resp_txt, channel, thread_ts:ts});
   } else if (msg.isMessage() && !msg.isSelfMessage() && msg.matchesMessage()) {
 
-    const match = emailCapture.exec(msg.text);
-    console.log(match?.groups?.emailAddr);
+    const email = msg.extractEmail()
 
-    const ipResp = (match?.groups?.emailAddr)? await ipQualityScore(match?.groups?.emailAddr) : `Unable to extract email from message.\n\n${msg.text}`
+    const ipResp = (email)? await ipQualityScore(email) : `Unable to extract email from message.\n\n${msg.text}`
     console.log(ipResp)
 
     // const result = await web.chat.postMessage({
