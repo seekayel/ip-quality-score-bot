@@ -66,8 +66,6 @@ const authorize_slack = (req,res,next)=>{
   return next()
 }
 
-// const regExStr = process.env.MESSAGE_REGEX_STRING || 'ip quality score'
-// const messageSelector = new RegExp(regExStr)
 const emailRegExStr = process.env.MESSAGE_EMAIL_CAPTURE || "mailto:(?<emailAddr>\\S+@\\S+)\\|";
 const emailCapture = new RegExp(emailRegExStr)
 const BLOCK = "```"
@@ -91,40 +89,29 @@ router.post('/events', authorize_slack, async (req, res) => {
   let event = req.body.event;
   let ts = event.thread_ts || event.ts
   let channel = event.channel
-  // let msg_txt = event.text
 
   let msg = new Message(req.body)
 
-  // let app_id = event?.bot_profile?.app_id
-  // let isAppMention = (event.type === "app_mention")
-  // let isMessage = (event.type === "message")
-  // let selfMessage = (app_id === process.env.SLACK_APP_ID)
-  // let matchesMessage = messageSelector.exec(msg_txt)
-
   console.log(`got[${event.type}]: ${msg.text}`)
-  console.log(`isMessage:${msg.isMessage()} selfMessage:${msg.isSelfMessage()} matchesMessage:${matchesMessage}`)
+  console.log(`isMessage:${msg.isMessage()} selfMessage:${msg.isSelfMessage()} matchesMessage:${msg.matchesMessage()}`)
 
   // Event types defined here: https://api.slack.com/events?filter=Events
   if (msg.isAppMention()) {
     let resp_txt = `Hi <@${event.user}>! :smile: I heard you say:\n\n> ${msg.text}`
-    const result = await web.chat.postMessage({
-      text: resp_txt,
-      channel,
-      thread_ts:ts
-    });
+    const result = await web.chat.postMessage({text: resp_txt, channel, thread_ts:ts});
   } else if (msg.isMessage() && !msg.isSelfMessage() && false && msg.matchesMessage()) {
 
     const match = emailCapture.exec(msg.text);
     console.log(match?.groups?.emailAddr);
 
     const ipResp = (match?.groups?.emailAddr)? await ipQualityScore(match?.groups?.emailAddr) : `Unable to extract email from message.\n\n${msg.text}`
+    console.log(ipResp)
 
     // const result = await web.chat.postMessage({
     //   text: `${BLOCK}${ipResp}${BLOCK}`,
     //   channel,
     //   thread_ts:ts
     // });
-    console.log(ipResp)
   } else {
     console.log(`unknown message type`)
   }
