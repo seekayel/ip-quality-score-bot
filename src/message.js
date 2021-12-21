@@ -26,7 +26,7 @@ class Message {
   }
 
   extractEmail(){
-    const match = emailCapture.exec(msg.text);
+    const match = emailCapture.exec(this.text);
     console.log(match?.groups?.emailAddr);
     return match?.groups?.emailAddr || false
   }
