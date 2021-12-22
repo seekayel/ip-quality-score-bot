@@ -46,9 +46,9 @@ app.use('/public', express.static('public', options))
 // #############################################################################
 // Check if the inbound call is actually from slack
 const authorize_secret = (req,res,next)=>{
-  console.log(`authorize_secret Authorization: ${req.headers['Authorization']}`)
-  const token = (req.headers['Authorization'] || 'Bearer none').split(' ')[1]
-  if(token !== process.env.SLACK_APP_CREDENTIALS_SIGNING_SECRET){
+  console.log(`authorize_secret Authorization: ${req.headers.authorization}`)
+
+  if(req.headers.authorization !== `Bearer ${process.env.SLACK_APP_CREDENTIALS_SIGNING_SECRET}`){
     console.log('Unauthorized request, must not be from myself')
     return res.sendStatus(401)
   }
