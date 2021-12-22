@@ -139,7 +139,7 @@ router.post('/events', authorize_slack, async (req, res) => {
     console.log(`posting to: ${req.protocol}://${req.headers['host']}/handle`)
     console.log(req.body)
     console.log({headers})
-    axios.post(`${req.protocol}://${req.headers['host']}/handle`, req.body, { headers })
+    axios.post(`https://${req.headers['host']}/handle`, req.body, { headers })
     console.log('axios.post returned')
   } else {
     console.log(`unknown message type`)
