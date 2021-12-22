@@ -1,3 +1,4 @@
+const axios = require('axios');
 const express = require('express')
 const bodyParser = require('body-parser')
 const crypto = require('crypto')
@@ -41,6 +42,19 @@ var options = {
 app.use('/public', express.static('public', options))
 
 
+
+
+// #############################################################################
+// Check if the inbound call is actually from slack
+const authorize_secret = (req,res,next)=>{
+  const token = (req.headers['Authorization'] || 'Bearer none').split()[1]
+  if(token !== process.env.SLACK_APP_CREDENTIALS_SIGNING_SECRET){
+    console.log('Unauthorized request, must not be from myself')
+    return res.sendStatus(401)
+  }
+  return next()
+}
+
 // #############################################################################
 // Check if the inbound call is actually from slack
 const authorize_slack = (req,res,next)=>{
@@ -81,6 +95,27 @@ async function ipQualityScore(email) {
 }
 
 
+router.post('/handle', authorize_secret, async (req,res) => {
+  let event = req.body.event;
+  let ts = event.thread_ts || event.ts
+  let channel = event.channel
+
+  let msg = new Message(req.body)
+
+  const email = msg.extractEmail()
+
+  const ipResp = (email)? await ipQualityScore(email) : `Unable to extract email from message.\n\n${msg.text}`
+  console.log(ipResp)
+
+  const result = await web.chat.postMessage({
+    text: `${BLOCK}${ipResp}${BLOCK}`,
+    channel,
+    thread_ts:ts
+  });
+
+  return res.sendStatus(200)
+})
+
 router.post('/events', authorize_slack, async (req, res) => {
   let event = req.body.event;
   let ts = event.thread_ts || event.ts
@@ -97,16 +132,12 @@ router.post('/events', authorize_slack, async (req, res) => {
     const result = await web.chat.postMessage({text: resp_txt, channel, thread_ts:ts});
   } else if (msg.isMessage() && !msg.isSelfMessage() && msg.matchesMessage()) {
 
-    const email = msg.extractEmail()
+    const headers = {
+      'Authorization': `Bearer ${process.env.SLACK_APP_CREDENTIALS_SIGNING_SECRET}`
+    };
 
-    const ipResp = (email)? await ipQualityScore(email) : `Unable to extract email from message.\n\n${msg.text}`
-    console.log(ipResp)
+    axios.post(`${req.protocol}://${req.headers['host']}/handle`, req.body, { headers })
 
-    const result = await web.chat.postMessage({
-      text: `${BLOCK}${ipResp}${BLOCK}`,
-      channel,
-      thread_ts:ts
-    });
   } else {
     console.log(`unknown message type`)
   }
