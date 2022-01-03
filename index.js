@@ -117,6 +117,7 @@ router.post('/handle', authorize_secret, async (req,res) => {
 })
 
 router.post('/events', authorize_slack, async (req, res) => {
+  console.log(new Date().toISOString())
   let event = req.body.event;
   let ts = event.thread_ts || event.ts
   let channel = event.channel
@@ -125,11 +126,14 @@ router.post('/events', authorize_slack, async (req, res) => {
 
   console.log(`got[${event.type}]: ${msg.text}`)
   console.log(`isMessage:${msg.isMessage()} selfMessage:${msg.isSelfMessage()} matchesMessage:${msg.matchesMessage()}`)
+  console.log(new Date().toISOString())
 
   // Event types defined here: https://api.slack.com/events?filter=Events
   if (msg.isAppMention()) {
     let resp_txt = `Hi <@${event.user}>! :smile: I heard you say:\n\n> ${msg.text}`
+    console.log('before slack',new Date().toISOString())
     const result = await web.chat.postMessage({text: resp_txt, channel, thread_ts:ts});
+    console.log('after slack',new Date().toISOString())
   } else if (msg.isMessage() && !msg.isSelfMessage() && msg.matchesMessage()) {
 
     const headers = {
