@@ -1,4 +1,6 @@
 const express = require('express')
+const expressLayouts = require('express-ejs-layouts')
+
 const bodyParser = require('body-parser')
 const crypto = require('crypto')
 const { WebClient } = require('@slack/web-api');
@@ -9,6 +11,10 @@ const web = new WebClient(token);
 const app = express()
 const fs = require('fs')
 const path = require('path')
+
+app.use(expressLayouts)
+app.set('layout', './layouts/standard')
+app.set('view engine', 'ejs');
 
 const axios = require('axios');
 const { Message } = require('./src/message');
@@ -156,7 +162,7 @@ router.all('/', async (req,res) => {
   try {
     if(process.env.SLACK_BOT_USER_OAUTH_TOKEN && process.env.SLACK_APP_CREDENTIALS_SIGNING_SECRET) {
       res.status(200)
-      return res.send('Hi! Configuration complete')
+      return res.sendFile(path.resolve('./public/done.html'));
     } else {
 
       manifest.settings.event_subscriptions.request_url = `https://${req.headers.host}/events`
@@ -166,7 +172,8 @@ router.all('/', async (req,res) => {
       let url = `https://api.slack.com/apps?new_app=1&manifest_json=${encodedManifest}`
       console.log(url)
       // res.send(url)
-      return res.sendFile(path.resolve('./public/index.html'));
+
+      return res.render('pages/index', {encodedManifest, title: 'Slack Bot'})
     }
   } catch(e) {
     res.status(500)
