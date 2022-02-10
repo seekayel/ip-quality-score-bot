@@ -2,9 +2,15 @@
 
 This repo is a starter slack bot that will let you receive mentions and send messages.
 
+[![Deploy to Cyclic](https://deploy.cyclic.app/button.svg)](https://deploy.cyclic.app/)
+
 ## Setup
 
-Use the `config/bot-manifest.yaml` file to create your app. Instructions are here: https://api.slack.com/reference/manifests#creating_app
+Click the deploy button above. This will fork and deploy the repo.
+
+Visit the app url. The page will give you a link with Slack Manifest to create your slack bot.
+
+Instructions are here: https://api.slack.com/reference/manifests#creating_app
 
 Copy your app credentials into environment variables inside of your Cyclic account.
 
@@ -12,9 +18,10 @@ https://api.slack.com/apps/TEAM_ID/general => `App Credentials` => `Signing Secr
 
 https://api.slack.com/apps/TEAM_ID/install-on-team => `Bot User OAuth Token`
 
-## Deploy
 
-Deploy this repo on Cyclic.
+## Test
+
+Try posting direct to your app from the command line.
 
 ```sh
 API_KEY=some_value_from_slack
